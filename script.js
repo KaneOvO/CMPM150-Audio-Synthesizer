@@ -1,4 +1,7 @@
 var audioContext = new AudioContext();
+var isStop = false;
+var isStart = false;
+var isPlay = false;
 
 var tone,
   gain,
@@ -25,10 +28,17 @@ function createNodes() {
 }
 
 function start() {
+  if (isStop || isStart || isPlay) {
+    return;
+  }
+
   createNodes();
+  isStart = true;
+  isPlay = true;
+  updateStatus("Fade in...");
 
   tone.frequency.value = 440;
-  gain.gain.value = 0.1;
+  gain.gain.value = 0;
 
   pitchModulator.frequency.value = 1;
   pitchModulatorGain.gain.value = 220;
@@ -39,12 +49,53 @@ function start() {
   tone.start();
   pitchModulator.start();
   volumeModulator.start();
+
+  var fadeInDuration = 2;
+  gain.gain.linearRampToValueAtTime(
+    0.1,
+    audioContext.currentTime + fadeInDuration
+  );
+
+  setTimeout(() => {
+    isStart = false;
+    updateStatus("Audio Playing");
+  }, fadeInDuration * 1000);
 }
 
 function stop() {
-  tone.stop();
-  pitchModulator.stop();
-  volumeModulator.stop();
+  if (isStop || isStart || !isPlay) {
+    return;
+  }
+
+  isStop = true;
+  updateStatus("Fade out...");
+
+  var fadeOutDuration = 3;
+
+  gain.gain.setTargetAtTime(
+    0.0001,
+    audioContext.currentTime,
+    fadeOutDuration / 5
+  );
+  volumeModulatorGain.gain.setTargetAtTime(
+    0.0001,
+    audioContext.currentTime,
+    fadeOutDuration / 5
+  );
+  pitchModulatorGain.gain.setTargetAtTime(
+    0.0001,
+    audioContext.currentTime,
+    fadeOutDuration / 5
+  );
+
+  setTimeout(() => {
+    isStop = false;
+    isPlay = false;
+    updateStatus("Audio Stopped");
+    tone.stop();
+    pitchModulator.stop();
+    volumeModulator.stop();
+  }, (fadeOutDuration + 0.1) * 1000);
 }
 
 window.onload = function () {
@@ -91,3 +142,8 @@ window.onload = function () {
     );
   });
 };
+
+function updateStatus(statusText) {
+  var statusElement = document.getElementById("status");
+  statusElement.textContent = statusText;
+}
