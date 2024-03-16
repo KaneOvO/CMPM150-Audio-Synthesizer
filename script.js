@@ -38,23 +38,34 @@ function start() {
   updateStatus("Fade in...");
 
   tone.frequency.value = 440;
-  gain.gain.value = 0;
+  gain.gain.value = 0.0001;
 
   pitchModulator.frequency.value = 1;
-  pitchModulatorGain.gain.value = 220;
+  pitchModulatorGain.gain.value = 0.0001;
 
   volumeModulator.frequency.value = 0.33;
-  volumeModulatorGain.gain.value = 0.1;
+  volumeModulatorGain.gain.value = 0.0001;
 
   tone.start();
   pitchModulator.start();
   volumeModulator.start();
 
   var fadeInDuration = 2;
-  gain.gain.linearRampToValueAtTime(
-    0.1,
-    audioContext.currentTime + fadeInDuration
+  gain.gain.setTargetAtTime(0.1, audioContext.currentTime, fadeInDuration / 5);
+
+  volumeModulatorGain.gain.setTargetAtTime(
+    volumeModulatorDepth.value,
+    audioContext.currentTime,
+    fadeInDuration / 5
   );
+  console.log(volumeModulatorDepth.value);
+
+  pitchModulatorGain.gain.setTargetAtTime(
+    pitchModulatorDepth.value,
+    audioContext.currentTime,
+    fadeInDuration / 5
+  )
+  console.log(pitchModulatorDepth.value);
 
   setTimeout(() => {
     isStart = false;
@@ -77,11 +88,13 @@ function stop() {
     audioContext.currentTime,
     fadeOutDuration / 5
   );
+
   volumeModulatorGain.gain.setTargetAtTime(
     0.0001,
     audioContext.currentTime,
     fadeOutDuration / 5
   );
+
   pitchModulatorGain.gain.setTargetAtTime(
     0.0001,
     audioContext.currentTime,
@@ -111,6 +124,9 @@ window.onload = function () {
   });
 
   volumeModulatorFrequency.addEventListener("input", function () {
+    if (isStart || isStop) {
+      return;
+    }
     var newFrequency = parseFloat(this.value);
     volumeModulator.frequency.linearRampToValueAtTime(
       newFrequency,
@@ -119,6 +135,9 @@ window.onload = function () {
   });
 
   volumeModulatorDepth.addEventListener("input", function () {
+    if (isStart || isStop) {
+      return;
+    }
     var newDepth = parseFloat(this.value);
     volumeModulatorGain.gain.linearRampToValueAtTime(
       newDepth,
@@ -127,6 +146,9 @@ window.onload = function () {
   });
 
   pitchModulatorFrequency.addEventListener("input", function () {
+    if (isStart || isStop) {
+      return;
+    }
     var newFrequency = parseFloat(this.value);
     pitchModulator.frequency.linearRampToValueAtTime(
       newFrequency,
@@ -135,6 +157,9 @@ window.onload = function () {
   });
 
   pitchModulatorDepth.addEventListener("input", function () {
+    if (isStart || isStop) {
+      return;
+    }
     var newDepth = parseFloat(this.value);
     pitchModulatorGain.gain.linearRampToValueAtTime(
       newDepth,
