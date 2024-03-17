@@ -139,10 +139,13 @@ window.onload = function () {
       return;
     }
     var newDepth = parseFloat(this.value);
-    volumeModulatorGain.gain.linearRampToValueAtTime(
-      newDepth,
-      audioContext.currentTime + 0.01
+
+    volumeModulatorGain.gain.setTargetAtTime(
+      newDepth, 
+      audioContext.currentTime, 
+      0.01
     );
+    
   });
 
   pitchModulatorFrequency.addEventListener("input", function () {
