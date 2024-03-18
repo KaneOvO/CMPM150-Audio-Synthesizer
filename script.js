@@ -169,7 +169,13 @@ window.onload = function () {
     var newDepth = parseFloat(this.value);
     pitchModulatorGain.gain.linearRampToValueAtTime(
       newDepth,
-      audioContext.currentTime + 0.01
+      audioContext.currentTime + 0.05
+    );
+
+    pitchModulatorGain.gain.setTargetAtTime(
+      newDepth, 
+      audioContext.currentTime, 
+      0.01
     );
 
     console.log(newDepth);
