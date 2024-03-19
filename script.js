@@ -143,7 +143,7 @@ window.onload = function () {
     volumeModulatorGain.gain.setTargetAtTime(
       newDepth,
       audioContext.currentTime,
-      1
+      1.5
     );
     console.log(newDepth);
   });
