@@ -63,7 +63,7 @@ function start() {
     pitchModulatorDepth.value,
     audioContext.currentTime,
     fadeInDuration / 5
-  )
+  );
 
   setTimeout(() => {
     isStart = false;
@@ -141,12 +141,11 @@ window.onload = function () {
     var newDepth = parseFloat(this.value);
 
     volumeModulatorGain.gain.setTargetAtTime(
-      newDepth, 
-      audioContext.currentTime, 
-      0.01
+      newDepth,
+      audioContext.currentTime,
+      1
     );
     console.log(newDepth);
-    
   });
 
   pitchModulatorFrequency.addEventListener("input", function () {
@@ -167,14 +166,10 @@ window.onload = function () {
       return;
     }
     var newDepth = parseFloat(this.value);
-    pitchModulatorGain.gain.linearRampToValueAtTime(
-      newDepth,
-      audioContext.currentTime + 0.05
-    );
 
     pitchModulatorGain.gain.setTargetAtTime(
-      newDepth, 
-      audioContext.currentTime, 
+      newDepth,
+      audioContext.currentTime,
       0.01
     );
 
