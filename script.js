@@ -31,6 +31,7 @@ function start() {
   if (isStop || isStart || isPlay) {
     return;
   }
+  disableSliders();
 
   createNodes();
   isStart = true;
@@ -67,6 +68,7 @@ function start() {
 
   setTimeout(() => {
     isStart = false;
+    enableSliders();
     updateStatus("Audio Playing");
   }, fadeInDuration * 1000);
 }
@@ -77,6 +79,7 @@ function stop() {
   }
 
   isStop = true;
+  disableSliders();
   updateStatus("Fade out...");
 
   var fadeOutDuration = 3;
@@ -102,6 +105,7 @@ function stop() {
   setTimeout(() => {
     isStop = false;
     isPlay = false;
+    enableSliders();
     updateStatus("Audio Stopped");
     tone.stop();
     pitchModulator.stop();
@@ -180,4 +184,18 @@ window.onload = function () {
 function updateStatus(statusText) {
   var statusElement = document.getElementById("status");
   statusElement.textContent = statusText;
+}
+
+function disableSliders() {
+  document.getElementById("volumeModulatorFrequency").disabled = true;
+  document.getElementById("volumeModulatorDepth").disabled = true;
+  document.getElementById("pitchModulatorFrequency").disabled = true;
+  document.getElementById("pitchModulatorDepth").disabled = true;
+}
+
+function enableSliders() {
+  document.getElementById("volumeModulatorFrequency").disabled = false;
+  document.getElementById("volumeModulatorDepth").disabled = false;
+  document.getElementById("pitchModulatorFrequency").disabled = false;
+  document.getElementById("pitchModulatorDepth").disabled = false;
 }
